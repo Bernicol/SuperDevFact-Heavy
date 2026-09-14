@@ -23,7 +23,7 @@ public sealed class SearchQuotesUseCase(IQuoteRepository quotes, ICustomerReposi
 
             summaries.Add(new QuoteSummaryDto(
                 quote.Id, quote.Number.Value, customerName, quote.IssueDate,
-                quote.CalculateTotals().SubtotalHt.Amount, quote.Status.ToString()));
+                quote.CalculateTotals().SubtotalHt.Amount, quote.Status.ToString(), quote.ConvertedInvoiceId));
         }
 
         if (string.IsNullOrWhiteSpace(searchText))

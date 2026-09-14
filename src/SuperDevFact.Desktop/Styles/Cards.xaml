@@ -1,0 +1,42 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="CardStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource SurfaceBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Padding" Value="20" />
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="4" BlurRadius="18" Opacity="0.35" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="MetricCardStyle" TargetType="Border" BasedOn="{StaticResource CardStyle}">
+        <Setter Property="Padding" Value="18" />
+    </Style>
+
+    <Style x:Key="IconBadgeStyle" TargetType="Border">
+        <Setter Property="Width" Value="38" />
+        <Setter Property="Height" Value="38" />
+        <Setter Property="CornerRadius" Value="10" />
+    </Style>
+
+    <!--
+        Feuille "papier" de l'aperçu de document (devis/facture) : reste toujours blanche,
+        quel que soit le thème de l'application, pour un rendu réaliste de document A4 posé
+        sur le cockpit sombre. Coins nets (pas de CornerRadius) comme une vraie feuille.
+    -->
+    <Style x:Key="PaperSheetStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource PaperBrush}" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="10" BlurRadius="30" Opacity="0.5" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

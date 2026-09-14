@@ -30,5 +30,6 @@ public static class DependencyInjection
         .AddTransient<ConvertQuoteToInvoiceUseCase>()
         .AddTransient<RecordPaymentUseCase>()
         .AddTransient<GetInvoiceForViewingUseCase>()
-        .AddTransient<SearchInvoicesUseCase>();
+        .AddTransient<SearchInvoicesUseCase>()
+        .AddTransient<ListPaymentsUseCase>();
 }

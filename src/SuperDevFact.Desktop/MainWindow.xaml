@@ -3,10 +3,234 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SuperDevFact.Desktop"
+        xmlns:conv="clr-namespace:SuperDevFact.Desktop.Converters"
+        xmlns:mi="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        xmlns:dashboardVm="clr-namespace:SuperDevFact.Desktop.ViewModels.Dashboard"
+        xmlns:quoteVm="clr-namespace:SuperDevFact.Desktop.ViewModels.Quotes"
+        xmlns:invoiceVm="clr-namespace:SuperDevFact.Desktop.ViewModels.Invoices"
+        xmlns:dashboardViews="clr-namespace:SuperDevFact.Desktop.Views.Dashboard"
+        xmlns:quoteViews="clr-namespace:SuperDevFact.Desktop.Views.Quotes"
+        xmlns:invoiceViews="clr-namespace:SuperDevFact.Desktop.Views.Invoices"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="SUPER DEV FACT" Height="900" Width="1500" MinHeight="700" MinWidth="1100"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource NavyDarkBrush}"
+        Icon="Assets/Logo.png"
+        WindowStyle="None"
+        ResizeMode="CanResizeWithGrip">
 
-    </Grid>
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="36"
+                             ResizeBorderThickness="5"
+                             GlassFrameThickness="0"
+                             CornerRadius="0"
+                             UseAeroCaptionButtons="False" />
+    </shell:WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <conv:StringEqualsConverter x:Key="StringEqualsConverter" />
+
+        <Style x:Key="CaptionButtonStyle" TargetType="Button">
+            <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="Width" Value="44" />
+            <Setter Property="Height" Value="36" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Root" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="{StaticResource NavySoftBrush}" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CloseCaptionButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Root" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="{StaticResource DangerBrush}" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Une vue par type de ViewModel : la zone de contenu choisit automatiquement le bon habillage -->
+        <DataTemplate DataType="{x:Type dashboardVm:DashboardViewModel}">
+            <dashboardViews:DashboardView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type quoteVm:QuoteListViewModel}">
+            <quoteViews:QuoteListView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type quoteVm:QuoteEditorViewModel}">
+            <quoteViews:QuoteEditorView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type invoiceVm:InvoiceListViewModel}">
+            <invoiceViews:InvoiceListView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type invoiceVm:PaymentListViewModel}">
+            <invoiceViews:PaymentListView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type invoiceVm:InvoiceViewerViewModel}">
+            <invoiceViews:InvoiceViewerView />
+        </DataTemplate>
+    </Window.Resources>
+
+    <Border x:Name="RootBorder" BorderBrush="{StaticResource NavySoftBrush}" BorderThickness="1">
+        <Grid Background="{StaticResource NavyDarkBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="36" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Barre de titre custom -->
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="12,0,0,0" IsHitTestVisible="False">
+                    <Image Source="Assets/Logo.png" Width="16" Height="16" VerticalAlignment="Center" />
+                    <TextBlock Text="SUPER DEV FACT" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" FontWeight="SemiBold"
+                               VerticalAlignment="Center" Margin="8,0,0,0" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                    <Button Content="&#xE921;" Click="OnMinimizeClick" Style="{StaticResource CaptionButtonStyle}" />
+                    <Button x:Name="MaximizeButton" Content="&#xE922;" Click="OnMaximizeClick" Style="{StaticResource CaptionButtonStyle}" />
+                    <Button Content="&#xE8BB;" Click="OnCloseClick" Style="{StaticResource CloseCaptionButtonStyle}" />
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="220" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Sidebar -->
+                <Border Grid.Column="0" Background="{StaticResource NavyGlassBrush}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!-- Logo : occupe toute la largeur de la colonne -->
+                        <StackPanel Grid.Row="0" Margin="12,20,12,12" HorizontalAlignment="Stretch">
+                            <Image Source="Assets/Logo.png" Stretch="Uniform" HorizontalAlignment="Stretch" />
+                            <TextBlock Text="Solaris Installation" FontSize="13" FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextInverseBrush}" HorizontalAlignment="Center" Margin="0,6,0,0" />
+                            <TextBlock Text="v1.0.0" FontSize="10.5" Foreground="{StaticResource TextInverseMutedBrush}"
+                                       HorizontalAlignment="Center" />
+                        </StackPanel>
+
+                        <!-- Navigation -->
+                        <StackPanel Grid.Row="1" Margin="12,4,12,0">
+                            <StackPanel.Resources>
+                                <Style TargetType="mi:MaterialIcon">
+                                    <Setter Property="Width" Value="16" />
+                                    <Setter Property="Height" Value="16" />
+                                    <Setter Property="Margin" Value="0,0,10,0" />
+                                    <Setter Property="VerticalAlignment" Value="Center" />
+                                </Style>
+                            </StackPanel.Resources>
+                            <TextBlock Text="ESPACE DE TRAVAIL" FontSize="9.5" FontWeight="Bold" Foreground="{StaticResource TextMutedBrush}"
+                                       Margin="4,0,0,6" />
+                            <RadioButton Style="{StaticResource NavigationItemStyle}"
+                                         Command="{Binding GoToDashboardCommand}"
+                                         IsChecked="{Binding ActiveSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter='Tableau de bord', Mode=OneWay}">
+                                <StackPanel Orientation="Horizontal">
+                                    <mi:MaterialIcon Kind="ViewDashboardOutline" />
+                                    <TextBlock Text="Tableau de bord" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </RadioButton>
+                            <RadioButton Style="{StaticResource NavigationItemStyle}" Margin="0,2,0,0"
+                                         Command="{Binding GoToQuotesCommand}"
+                                         IsChecked="{Binding ActiveSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter='Devis', Mode=OneWay}">
+                                <StackPanel Orientation="Horizontal">
+                                    <mi:MaterialIcon Kind="FileDocumentOutline" />
+                                    <TextBlock Text="Devis" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </RadioButton>
+                            <RadioButton Style="{StaticResource NavigationItemStyle}" Margin="0,2,0,0"
+                                         Command="{Binding GoToInvoicesCommand}"
+                                         IsChecked="{Binding ActiveSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter='Factures', Mode=OneWay}">
+                                <StackPanel Orientation="Horizontal">
+                                    <mi:MaterialIcon Kind="ReceiptTextOutline" />
+                                    <TextBlock Text="Factures" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </RadioButton>
+                            <RadioButton Style="{StaticResource NavigationItemStyle}" Margin="0,2,0,0"
+                                         Command="{Binding GoToPaymentsCommand}"
+                                         IsChecked="{Binding ActiveSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter='Paiements', Mode=OneWay}">
+                                <StackPanel Orientation="Horizontal">
+                                    <mi:MaterialIcon Kind="CashMultiple" />
+                                    <TextBlock Text="Paiements" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </RadioButton>
+                        </StackPanel>
+
+                        <!-- Conseil du jour -->
+                        <Border Grid.Row="2" VerticalAlignment="Bottom" Margin="12,0,12,16" CornerRadius="12" Padding="14"
+                                Background="{StaticResource NavySoftBrush}">
+                            <StackPanel>
+                                <TextBlock Text="💡 Conseil du jour" FontSize="11.5" FontWeight="Bold" Foreground="{StaticResource TextInverseBrush}" />
+                                <TextBlock Text="{Binding DailyTip}" FontSize="11" Foreground="{StaticResource TextInverseMutedBrush}"
+                                           Margin="0,4,0,0" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Pied de sidebar -->
+                        <StackPanel Grid.Row="3" Margin="12,0,12,16">
+                            <RadioButton Style="{StaticResource NavigationItemStyle}" IsHitTestVisible="False" Opacity="0.55" Margin="0,0,0,10">
+                                <StackPanel Orientation="Horizontal">
+                                    <mi:MaterialIcon Kind="CogOutline" Width="16" Height="16" Margin="0,0,10,0" VerticalAlignment="Center" />
+                                    <TextBlock Text="Paramètres" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </RadioButton>
+                            <Border BorderBrush="{StaticResource NavySoftBrush}" BorderThickness="0,1,0,0" Padding="4,12,0,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Width="28" Height="28" CornerRadius="14" Background="{StaticResource PrimarySoftBrush}">
+                                        <TextBlock Text="SI" Foreground="{StaticResource PrimaryBrush}" FontWeight="Bold" FontSize="11"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Border>
+                                    <StackPanel Margin="8,0,0,0" VerticalAlignment="Center">
+                                        <TextBlock Text="Studio Solaris" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextInverseBrush}" />
+                                        <TextBlock Text="Compte démo" FontSize="10.5" Foreground="{StaticResource TextInverseMutedBrush}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Contenu : dépend de la vue courante du Shell -->
+                <ContentControl Grid.Column="1" Content="{Binding CurrentView}" Background="{StaticResource AppBackgroundBrush}" />
+            </Grid>
+        </Grid>
+    </Border>
 </Window>

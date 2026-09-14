@@ -7,4 +7,9 @@ public sealed record QuoteSummaryDto(
     string CustomerName,
     DateOnly IssueDate,
     decimal TotalHt,
-    string Status);
+    string Status,
+    Guid? ConvertedInvoiceId)
+{
+    /// <summary>Statut affichable : un devis accepté déjà transformé se présente comme "Facturé", pas comme "Accepté".</summary>
+    public string DisplayStatus => ConvertedInvoiceId is not null ? "Converted" : Status;
+}

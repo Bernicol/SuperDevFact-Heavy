@@ -1,0 +1,450 @@
+<UserControl x:Class="SuperDevFact.Desktop.Views.Quotes.QuoteEditorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conv="clr-namespace:SuperDevFact.Desktop.Converters"
+             xmlns:vm="clr-namespace:SuperDevFact.Desktop.ViewModels.Quotes"
+             xmlns:b="clr-namespace:SuperDevFact.Desktop.Behaviors"
+             xmlns:mi="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+             mc:Ignorable="d"
+             d:DesignHeight="900" d:DesignWidth="1400">
+
+    <UserControl.Resources>
+        <conv:StatusLabelConverter x:Key="StatusLabelConverter" />
+        <conv:StatusBrushConverter x:Key="StatusBrushConverter" />
+        <conv:StatusForegroundConverter x:Key="StatusForegroundConverter" />
+        <conv:WorkflowStepBrushConverter x:Key="WorkflowStepBrushConverter" />
+        <conv:WorkflowStepTextBrushConverter x:Key="WorkflowStepTextBrushConverter" />
+        <conv:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+
+    <Grid Background="{StaticResource AppBackgroundBrush}">
+        <Grid.Resources>
+            <Style TargetType="Polygon" x:Key="ChevronStyle">
+                <Setter Property="Height" Value="46" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="Stretch" Value="Fill" />
+                <Setter Property="Points" Value="0,0 88,0 100,50 88,100 0,100 14,50" />
+            </Style>
+            <Style TargetType="TextBlock" x:Key="ChevronLabelStyle" BasedOn="{StaticResource BodyText}">
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="FontSize" Value="13.5" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </Grid.Resources>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- 1. État du document : une bande pleine largeur, responsive, toujours visible en premier -->
+        <Border Grid.Row="0" Background="{StaticResource NavyGlassBrush}" Padding="0,16">
+            <Grid MaxWidth="900" HorizontalAlignment="Stretch" Margin="60,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="0">
+                    <Polygon Style="{StaticResource ChevronStyle}"
+                             Fill="{Binding WorkflowStepIndex, Converter={StaticResource WorkflowStepBrushConverter}, ConverterParameter=0}" />
+                    <TextBlock Text="Brouillon" Style="{StaticResource ChevronLabelStyle}" Margin="0,0,14,0"
+                               Foreground="{Binding WorkflowStepIndex, Converter={StaticResource WorkflowStepTextBrushConverter}, ConverterParameter=0}" />
+                </Grid>
+                <Grid Grid.Column="1" Margin="-16,0,0,0">
+                    <Polygon Style="{StaticResource ChevronStyle}"
+                             Fill="{Binding WorkflowStepIndex, Converter={StaticResource WorkflowStepBrushConverter}, ConverterParameter=1}" />
+                    <TextBlock Text="Envoyé" Style="{StaticResource ChevronLabelStyle}" Margin="16,0,0,0"
+                               Foreground="{Binding WorkflowStepIndex, Converter={StaticResource WorkflowStepTextBrushConverter}, ConverterParameter=1}" />
+                </Grid>
+                <Grid Grid.Column="2" Margin="-16,0,0,0">
+                    <Polygon Style="{StaticResource ChevronStyle}"
+                             Fill="{Binding WorkflowStepIndex, Converter={StaticResource WorkflowStepBrushConverter}, ConverterParameter=2}" />
+                    <TextBlock Text="Accepté" Style="{StaticResource ChevronLabelStyle}" Margin="16,0,0,0"
+                               Foreground="{Binding WorkflowStepIndex, Converter={StaticResource WorkflowStepTextBrushConverter}, ConverterParameter=2}" />
+                </Grid>
+                <Grid Grid.Column="3" Margin="-16,0,0,0">
+                    <Polygon Style="{StaticResource ChevronStyle}"
+                             Fill="{Binding WorkflowStepIndex, Converter={StaticResource WorkflowStepBrushConverter}, ConverterParameter=3}" />
+                    <TextBlock Text="Facturé" Style="{StaticResource ChevronLabelStyle}" Margin="16,0,0,0"
+                               Foreground="{Binding WorkflowStepIndex, Converter={StaticResource WorkflowStepTextBrushConverter}, ConverterParameter=3}" />
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- 2. Titre du document + actions -->
+        <Border Grid.Row="1" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1" Padding="28,18">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Devis" Style="{StaticResource SecondaryText}" VerticalAlignment="Center" />
+                        <TextBlock Text=" › " Style="{StaticResource SecondaryText}" VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding Number}" Style="{StaticResource SecondaryText}" VerticalAlignment="Center" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                        <TextBlock Text="{Binding Number}" Style="{StaticResource DisplayText}" VerticalAlignment="Center" />
+                        <Border Style="{StaticResource StatusBadgeStyle}" Margin="12,0,0,0" VerticalAlignment="Center"
+                                Background="{Binding StatusRaw, Converter={StaticResource StatusBrushConverter}}">
+                            <TextBlock Style="{StaticResource StatusBadgeTextStyle}"
+                                       Text="{Binding StatusRaw, Converter={StaticResource StatusLabelConverter}}"
+                                       Foreground="{Binding StatusRaw, Converter={StaticResource StatusForegroundConverter}}" />
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Actions -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <StackPanel.Resources>
+                        <Style TargetType="mi:MaterialIcon">
+                            <Setter Property="Width" Value="15" />
+                            <Setter Property="Height" Value="15" />
+                            <Setter Property="Margin" Value="0,0,6,0" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <Button Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,8,0" Command="{Binding SaveCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <mi:MaterialIcon Kind="ContentSaveOutline" />
+                            <TextBlock Text="Enregistrer" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,8,0" Command="{Binding SendCommand}"
+                            Visibility="{Binding IsDraft, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <StackPanel Orientation="Horizontal">
+                            <mi:MaterialIcon Kind="SendOutline" />
+                            <TextBlock Text="Envoyer" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,8,0" Command="{Binding AcceptCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <mi:MaterialIcon Kind="CheckCircleOutline" />
+                            <TextBlock Text="Marquer accepté" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource PrimaryButtonStyle}" Command="{Binding ConvertToInvoiceCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <mi:MaterialIcon Kind="ReceiptTextOutline" />
+                            <TextBlock Text="Transformer en facture" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Bannière de confirmation -->
+        <Border Grid.Row="2" Background="{StaticResource SuccessSoftBrush}" Padding="24,10"
+                Visibility="{Binding LastCreatedInvoiceNumber, Converter={StaticResource StringToVisibilityConverter}}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="✓" Foreground="{StaticResource SuccessBrush}" FontWeight="Bold" Margin="0,0,8,0" />
+                <TextBlock Style="{StaticResource BodyText}">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="Facture {0} créée avec succès.">
+                            <Binding Path="LastCreatedInvoiceNumber" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+            </StackPanel>
+        </Border>
+
+        <!-- Corps : édition + aperçu -->
+        <Grid Grid.Row="3" Margin="24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.35*" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+
+                    <!-- Informations générales -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <TextBlock Text="Informations générales" Style="{StaticResource SubheadingText}" Margin="0,0,0,14" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="16" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="CLIENT" Style="{StaticResource CaptionText}" />
+                                    <TextBlock Text="{Binding CustomerName}" Style="{StaticResource BodyText}" FontWeight="SemiBold" Margin="0,4,0,0" />
+                                    <TextBlock Text="{Binding CustomerAddressLine}" Style="{StaticResource SecondaryText}" Margin="0,2,0,0" />
+                                    <TextBlock Text="{Binding CustomerContactLine}" Style="{StaticResource SecondaryText}" Margin="0,2,0,0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="RÉFÉRENCE CLIENT" Style="{StaticResource CaptionText}" />
+                                    <TextBox Text="{Binding ClientReference, UpdateSourceTrigger=PropertyChanged}"
+                                             Style="{StaticResource TextInputStyle}" Margin="0,4,0,0" />
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,16,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="16" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="16" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="DATE DU DEVIS" Style="{StaticResource CaptionText}" />
+                                    <DatePicker SelectedDate="{Binding IssueDate}" Margin="0,4,0,0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="VALIDITÉ (JOURS)" Style="{StaticResource CaptionText}" />
+                                    <TextBox Text="{Binding ValidityDays, UpdateSourceTrigger=PropertyChanged}"
+                                             Style="{StaticResource TextInputStyle}" Margin="0,4,0,0" b:TextBoxBehaviors.SelectAllOnFocus="True" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="CONDITIONS DE PAIEMENT" Style="{StaticResource CaptionText}" />
+                                    <ComboBox ItemsSource="{Binding PaymentTermsOptions}" DisplayMemberPath="Label"
+                                              SelectedValuePath="Days" SelectedValue="{Binding SelectedPaymentTermsDays}"
+                                              Style="{StaticResource ComboBoxInputStyle}" Margin="0,4,0,0" />
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Lignes de devis -->
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,14">
+                                <TextBlock Text="Lignes de devis" Style="{StaticResource SubheadingText}" HorizontalAlignment="Left" />
+                                <Button Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Right" Command="{Binding AddLineCommand}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <mi:MaterialIcon Kind="Plus" Width="15" Height="15" Margin="0,0,6,0" VerticalAlignment="Center" />
+                                        <TextBlock Text="Ajouter une ligne" />
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+
+                            <!-- En-têtes de colonnes -->
+                            <Grid Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="26" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="32" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="1" Text="Désignation" Style="{StaticResource CaptionText}" />
+                                <TextBlock Grid.Column="2" Text="Qté" Style="{StaticResource CaptionText}" />
+                                <TextBlock Grid.Column="3" Text="Unité" Style="{StaticResource CaptionText}" />
+                                <TextBlock Grid.Column="4" Text="Prix HT" Style="{StaticResource CaptionText}" />
+                                <TextBlock Grid.Column="5" Text="Remise %" Style="{StaticResource CaptionText}" />
+                                <TextBlock Grid.Column="6" Text="Total HT" Style="{StaticResource CaptionText}" HorizontalAlignment="Right" />
+                            </Grid>
+
+                            <ItemsControl ItemsSource="{Binding Lines}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type vm:QuoteLineRowViewModel}">
+                                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="0,8">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="26" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="70" />
+                                                    <ColumnDefinition Width="70" />
+                                                    <ColumnDefinition Width="100" />
+                                                    <ColumnDefinition Width="70" />
+                                                    <ColumnDefinition Width="100" />
+                                                    <ColumnDefinition Width="32" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <TextBlock Grid.Column="0" Text="⠿" Foreground="{StaticResource TextMutedBrush}"
+                                                           VerticalAlignment="Center" HorizontalAlignment="Center" />
+
+                                                <TextBox Grid.Column="1" Margin="0,0,8,0"
+                                                         Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                                                         Style="{StaticResource TextInputStyle}" BorderThickness="0" Padding="4,2"
+                                                         VerticalAlignment="Center" />
+
+                                                <TextBox Grid.Column="2" Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
+                                                         Style="{StaticResource TextInputStyle}" Margin="0,0,6,0" b:TextBoxBehaviors.SelectAllOnFocus="True" />
+                                                <TextBox Grid.Column="3" Text="{Binding Unit, UpdateSourceTrigger=PropertyChanged}"
+                                                         Style="{StaticResource TextInputStyle}" Margin="0,0,6,0" b:TextBoxBehaviors.SelectAllOnFocus="True" />
+                                                <TextBox Grid.Column="4" Text="{Binding UnitPriceHt, UpdateSourceTrigger=PropertyChanged}"
+                                                         Style="{StaticResource TextInputStyle}" Margin="0,0,6,0" b:TextBoxBehaviors.SelectAllOnFocus="True" />
+                                                <TextBox Grid.Column="5" Text="{Binding DiscountRatePercent, UpdateSourceTrigger=PropertyChanged}"
+                                                         Style="{StaticResource TextInputStyle}" Margin="0,0,6,0" b:TextBoxBehaviors.SelectAllOnFocus="True" />
+
+                                                <TextBlock Grid.Column="6" Style="{StaticResource BodyText}" FontWeight="SemiBold"
+                                                           HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                           Text="{Binding LineTotalHt, StringFormat='{}{0:N2} €'}" />
+
+                                                <Button Grid.Column="7" Content="✕" Style="{StaticResource GhostButtonStyle}"
+                                                        Padding="4" FontSize="11"
+                                                        Command="{Binding DataContext.RemoveLineCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                        CommandParameter="{Binding}" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <!-- Récapitulatif -->
+                            <StackPanel HorizontalAlignment="Right" Margin="0,16,0,0" MinWidth="260">
+                                <Grid Margin="0,3">
+                                    <TextBlock Text="Total HT" Style="{StaticResource SecondaryText}" HorizontalAlignment="Left" />
+                                    <TextBlock Text="{Binding SubtotalHt, StringFormat='{}{0:N2} €'}" Style="{StaticResource BodyText}" HorizontalAlignment="Right" />
+                                </Grid>
+                                <Grid Margin="0,3">
+                                    <TextBlock Text="Remise globale %" Style="{StaticResource SecondaryText}" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                    <TextBox Text="{Binding GlobalDiscountRatePercent, UpdateSourceTrigger=PropertyChanged}"
+                                             Style="{StaticResource TextInputStyle}" Width="70" HorizontalAlignment="Right" Padding="6,4"
+                                             b:TextBoxBehaviors.SelectAllOnFocus="True" />
+                                </Grid>
+                                <Grid Margin="0,3">
+                                    <TextBlock Text="Total HT net" Style="{StaticResource SecondaryText}" HorizontalAlignment="Left" />
+                                    <TextBlock Text="{Binding NetHt, StringFormat='{}{0:N2} €'}" Style="{StaticResource BodyText}" HorizontalAlignment="Right" />
+                                </Grid>
+                                <Grid Margin="0,3">
+                                    <TextBlock Text="TVA" Style="{StaticResource SecondaryText}" HorizontalAlignment="Left" />
+                                    <TextBlock Text="{Binding TotalTax, StringFormat='{}{0:N2} €'}" Style="{StaticResource BodyText}" HorizontalAlignment="Right" />
+                                </Grid>
+                                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Margin="0,8,0,8" />
+                                <Grid>
+                                    <TextBlock Text="Total TTC" Style="{StaticResource SubheadingText}" HorizontalAlignment="Left" />
+                                    <TextBlock Text="{Binding TotalTtc, StringFormat='{}{0:N2} €'}" Style="{StaticResource SubheadingText}"
+                                               Foreground="{StaticResource PrimaryBrush}" HorizontalAlignment="Right" />
+                                </Grid>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Notes -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="16" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Notes internes" Style="{StaticResource SubheadingText}" Margin="0,0,0,8" />
+                                <TextBox Text="{Binding InternalNotes, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{StaticResource TextInputStyle}" AcceptsReturn="True" Height="70" TextWrapping="Wrap" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Message pour le client" Style="{StaticResource SubheadingText}" Margin="0,0,0,8" />
+                                <TextBox Text="{Binding ClientMessage, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{StaticResource TextInputStyle}" AcceptsReturn="True" Height="70" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Aperçu live : vraie feuille A4 (coins nets, ombre portée), posée sur le cockpit sombre -->
+            <DockPanel Grid.Column="2">
+                <TextBlock DockPanel.Dock="Top" Text="APERÇU DU DOCUMENT" Style="{StaticResource CaptionText}" Margin="4,0,0,10" />
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <Border Style="{StaticResource PaperSheetStyle}" Width="420" Padding="32" HorizontalAlignment="Center" VerticalAlignment="Top">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Style="{StaticResource PaperHeadingText}">
+                                        <Run Text="SOLARIS" Foreground="{StaticResource PrimaryBrush}" />
+                                        <Run Text=" INSTALLATION" />
+                                    </TextBlock>
+                                    <TextBlock Text="4 rue du Soleil, 33700 Mérignac" Style="{StaticResource PaperCaptionText}" Margin="0,8,0,0" />
+                                    <TextBlock Text="contact@solaris-installation.fr" Style="{StaticResource PaperCaptionText}" />
+                                    <TextBlock Text="SIRET : 812 345 678 00019" Style="{StaticResource PaperCaptionText}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                    <TextBlock Text="DEVIS" Style="{StaticResource PaperHeadingText}" HorizontalAlignment="Right" />
+                                    <TextBlock Text="{Binding Number}" Style="{StaticResource PaperBodyText}" HorizontalAlignment="Right" Margin="0,2,0,0" />
+                                    <TextBlock Text="{Binding IssueDate, StringFormat='Date : {0:dd/MM/yyyy}'}" Style="{StaticResource PaperCaptionText}" HorizontalAlignment="Right" Margin="0,8,0,0" />
+                                </StackPanel>
+                            </Grid>
+
+                            <Border BorderBrush="#0F172A" BorderThickness="0,2,0,0" Margin="0,0,0,16" />
+
+                            <StackPanel Margin="0,0,0,16">
+                                <TextBlock Text="ADRESSÉ À" Style="{StaticResource PaperCaptionText}" />
+                                <TextBlock Text="{Binding CustomerName}" Style="{StaticResource PaperSubheadingText}" Margin="0,2,0,0" />
+                                <TextBlock Text="{Binding CustomerAddressLine}" Style="{StaticResource PaperCaptionText}" Margin="0,1,0,0" />
+                            </StackPanel>
+
+                            <!-- En-têtes du tableau -->
+                            <Grid Margin="0,0,0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="DÉSIGNATION" Style="{StaticResource PaperCaptionText}" />
+                                <TextBlock Grid.Column="1" Text="TOTAL HT" Style="{StaticResource PaperCaptionText}" />
+                            </Grid>
+                            <Border BorderBrush="#0F172A" BorderThickness="0,1,0,0" Margin="0,0,0,8" />
+
+                            <ItemsControl ItemsSource="{Binding Lines}" Margin="0,0,0,12">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type vm:QuoteLineRowViewModel}">
+                                        <Grid Margin="0,0,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0">
+                                                <TextBlock Text="{Binding Description}" Style="{StaticResource PaperBodyText}" FontWeight="Medium" />
+                                                <TextBlock Style="{StaticResource PaperCaptionText}">
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="{}{0} × {1} {2}">
+                                                            <Binding Path="Quantity" />
+                                                            <Binding Path="UnitPriceHt" StringFormat="{}{0:N2} €" />
+                                                            <Binding Path="Unit" />
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                            </StackPanel>
+                                            <TextBlock Grid.Column="1" Text="{Binding LineTotalHt, StringFormat='{}{0:N2} €'}"
+                                                       Style="{StaticResource PaperBodyText}" FontWeight="SemiBold" VerticalAlignment="Top" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <Border BorderBrush="#E2E8F0" BorderThickness="0,1,0,0" Margin="0,0,0,10" />
+
+                            <Grid Margin="0,2"><TextBlock Text="Total HT" Style="{StaticResource PaperCaptionText}" /><TextBlock Text="{Binding SubtotalHt, StringFormat='{}{0:N2} €'}" Style="{StaticResource PaperBodyText}" HorizontalAlignment="Right" /></Grid>
+                            <Grid Margin="0,2"><TextBlock Text="Remise" Style="{StaticResource PaperCaptionText}" /><TextBlock Text="{Binding GlobalDiscountAmount, StringFormat='-{0:N2} €'}" Style="{StaticResource PaperBodyText}" HorizontalAlignment="Right" /></Grid>
+                            <Grid Margin="0,2"><TextBlock Text="TVA" Style="{StaticResource PaperCaptionText}" /><TextBlock Text="{Binding TotalTax, StringFormat='{}{0:N2} €'}" Style="{StaticResource PaperBodyText}" HorizontalAlignment="Right" /></Grid>
+                            <Border BorderBrush="#0F172A" BorderThickness="0,2,0,0" Margin="0,8,0,8" />
+                            <Grid>
+                                <TextBlock Text="Total TTC" Style="{StaticResource PaperHeadingText}" FontSize="14" />
+                                <TextBlock Text="{Binding TotalTtc, StringFormat='{}{0:N2} €'}" Style="{StaticResource PaperHeadingText}" FontSize="14"
+                                           Foreground="{StaticResource PrimaryBrush}" HorizontalAlignment="Right" />
+                            </Grid>
+
+                            <TextBlock Text="{Binding ClientMessage}" Style="{StaticResource PaperCaptionText}" Margin="0,24,0,0"
+                                       TextWrapping="Wrap" FontStyle="Italic" />
+                        </StackPanel>
+                    </Border>
+                </ScrollViewer>
+            </DockPanel>
+        </Grid>
+    </Grid>
+</UserControl>

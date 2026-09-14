@@ -1,0 +1,94 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Palette Super Dev Fact : cockpit sombre + accents électriques, reportée de la
+        version web (client React) pour une cohérence visuelle entre les deux clients.
+        Toutes les couleurs de l'application doivent passer par ces ressources —
+        ne jamais coder une couleur en dur dans un écran.
+    -->
+
+    <!-- Sidebar / navy -->
+    <Color x:Key="NavyDarkerColor">#05070C</Color>
+    <Color x:Key="NavyDarkColor">#0A0E18</Color>
+    <Color x:Key="NavyMidColor">#131826</Color>
+    <Color x:Key="NavySoftColor">#1B2233</Color>
+
+    <!-- Actions / accents -->
+    <Color x:Key="PrimaryColor">#3B82F6</Color>
+    <Color x:Key="PrimaryHoverColor">#2563EB</Color>
+    <Color x:Key="PrimaryPressedColor">#1D4ED8</Color>
+    <Color x:Key="PrimarySoftColor">#1A3B82F6</Color>
+    <Color x:Key="CyanColor">#22D3EE</Color>
+    <Color x:Key="VioletColor">#A78BFA</Color>
+
+    <!-- États sémantiques (couleurs pleines relevées pour rester lisibles sur fond sombre) -->
+    <Color x:Key="SuccessColor">#34D399</Color>
+    <Color x:Key="SuccessSoftColor">#1A34D399</Color>
+    <Color x:Key="WarningColor">#FBBF24</Color>
+    <Color x:Key="WarningSoftColor">#1AFBBF24</Color>
+    <Color x:Key="DangerColor">#FB7185</Color>
+    <Color x:Key="DangerSoftColor">#1AFB7185</Color>
+    <Color x:Key="InfoColor">#3B82F6</Color>
+    <Color x:Key="InfoSoftColor">#1A3B82F6</Color>
+    <Color x:Key="NeutralSoftColor">#14FFFFFF</Color>
+    <Color x:Key="NeutralColor">#94A3B8</Color>
+
+    <!-- Surfaces / texte : des surfaces "verre" translucides posées sur un fond quasi noir -->
+    <Color x:Key="AppBackgroundColor">#070A12</Color>
+    <Color x:Key="SurfaceColor">#0DFFFFFF</Color>
+    <Color x:Key="BorderColor">#14FFFFFF</Color>
+    <Color x:Key="TextPrimaryColor">#F1F5F9</Color>
+    <Color x:Key="TextSecondaryColor">#94A3B8</Color>
+    <Color x:Key="TextMutedColor">#64748B</Color>
+    <Color x:Key="TextInverseColor">#FFFFFF</Color>
+    <Color x:Key="TextInverseMutedColor">#94A3B8</Color>
+
+    <!-- Brushes dérivés -->
+    <SolidColorBrush x:Key="NavyDarkerBrush" Color="{StaticResource NavyDarkerColor}" />
+    <SolidColorBrush x:Key="NavyDarkBrush" Color="{StaticResource NavyDarkColor}" />
+    <SolidColorBrush x:Key="NavyMidBrush" Color="{StaticResource NavyMidColor}" />
+    <SolidColorBrush x:Key="NavySoftBrush" Color="{StaticResource NavySoftColor}" />
+
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}" />
+    <SolidColorBrush x:Key="PrimaryHoverBrush" Color="{StaticResource PrimaryHoverColor}" />
+    <SolidColorBrush x:Key="PrimaryPressedBrush" Color="{StaticResource PrimaryPressedColor}" />
+    <SolidColorBrush x:Key="PrimarySoftBrush" Color="{StaticResource PrimarySoftColor}" />
+    <SolidColorBrush x:Key="CyanBrush" Color="{StaticResource CyanColor}" />
+    <SolidColorBrush x:Key="VioletBrush" Color="{StaticResource VioletColor}" />
+
+    <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}" />
+    <SolidColorBrush x:Key="SuccessSoftBrush" Color="{StaticResource SuccessSoftColor}" />
+    <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}" />
+    <SolidColorBrush x:Key="WarningSoftBrush" Color="{StaticResource WarningSoftColor}" />
+    <SolidColorBrush x:Key="DangerBrush" Color="{StaticResource DangerColor}" />
+    <SolidColorBrush x:Key="DangerSoftBrush" Color="{StaticResource DangerSoftColor}" />
+    <SolidColorBrush x:Key="InfoBrush" Color="{StaticResource InfoColor}" />
+    <SolidColorBrush x:Key="InfoSoftBrush" Color="{StaticResource InfoSoftColor}" />
+    <SolidColorBrush x:Key="NeutralSoftBrush" Color="{StaticResource NeutralSoftColor}" />
+    <SolidColorBrush x:Key="NeutralBrush" Color="{StaticResource NeutralColor}" />
+
+    <SolidColorBrush x:Key="AppBackgroundBrush" Color="{StaticResource AppBackgroundColor}" />
+    <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}" />
+    <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}" />
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondaryColor}" />
+    <SolidColorBrush x:Key="TextMutedBrush" Color="{StaticResource TextMutedColor}" />
+    <SolidColorBrush x:Key="TextInverseBrush" Color="{StaticResource TextInverseColor}" />
+    <SolidColorBrush x:Key="TextInverseMutedBrush" Color="{StaticResource TextInverseMutedColor}" />
+
+    <!-- Surface toujours blanche, réservée à l'aperçu "papier" des documents (devis/facture) -->
+    <SolidColorBrush x:Key="PaperBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="PaperTextBrush" Color="#0F172A" />
+    <SolidColorBrush x:Key="PaperMutedTextBrush" Color="#64748B" />
+
+    <!--
+        Dégradé navy semi-transparent utilisé sur la sidebar et la barre de titre.
+    -->
+    <LinearGradientBrush x:Key="NavyGlassBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#FF05070C" Offset="0" />
+        <GradientStop Color="#FF0A0E18" Offset="0.55" />
+        <GradientStop Color="#FF0D1220" Offset="1" />
+    </LinearGradientBrush>
+
+</ResourceDictionary>

@@ -1,0 +1,117 @@
+<UserControl x:Class="SuperDevFact.Desktop.Views.Quotes.QuoteListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conv="clr-namespace:SuperDevFact.Desktop.Converters"
+             xmlns:mi="clr-namespace:Material.Icons.WPF;assembly=Material.Icons.WPF"
+             xmlns:vm="clr-namespace:SuperDevFact.Desktop.ViewModels.Quotes"
+             mc:Ignorable="d" d:DesignHeight="900" d:DesignWidth="1200">
+
+    <UserControl.Resources>
+        <conv:StatusLabelConverter x:Key="StatusLabelConverter" />
+        <conv:StatusBrushConverter x:Key="StatusBrushConverter" />
+        <conv:StatusForegroundConverter x:Key="StatusForegroundConverter" />
+        <conv:HexToBrushConverter x:Key="HexToBrushConverter" />
+    </UserControl.Resources>
+
+    <Grid Background="{StaticResource AppBackgroundBrush}">
+        <ScrollViewer Padding="28">
+            <StackPanel>
+                <TextBlock Text="Devis" Style="{StaticResource DisplayText}" Margin="0,0,0,4" />
+                <TextBlock Text="Pilotage commercial — organisés par étape du pipeline." Style="{StaticResource SecondaryText}" Margin="0,0,0,20" />
+
+                <!-- Ligne de stats -->
+                <Border Style="{StaticResource CardStyle}" Padding="0" Margin="0,0,0,20">
+                    <ItemsControl ItemsSource="{Binding Stats}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="5" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type vm:QuoteStatItemViewModel}">
+                                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0" Padding="16">
+                                    <StackPanel Orientation="Horizontal">
+                                        <mi:MaterialIcon Kind="{Binding Icon}" Width="18" Height="18" VerticalAlignment="Top"
+                                                          Foreground="{Binding ColorHex, Converter={StaticResource HexToBrushConverter}}" Margin="0,2,10,0" />
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Count}" Style="{StaticResource MetricValueText}" FontSize="20" />
+                                            <TextBlock Style="{StaticResource CaptionText}">
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0} · {1:N0} €">
+                                                        <Binding Path="Label" />
+                                                        <Binding Path="Total" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+
+                <!-- Entonnoir : un bloc par étape du pipeline -->
+                <ItemsControl ItemsSource="{Binding Groups}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:QuoteGroupViewModel}">
+                            <Border Style="{StaticResource CardStyle}" Padding="0" Margin="0,0,0,16">
+                                <StackPanel>
+                                    <Grid Margin="20,16,20,12">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                            <mi:MaterialIcon Kind="{Binding Icon}" Width="16" Height="16" VerticalAlignment="Center"
+                                                              Foreground="{Binding ColorHex, Converter={StaticResource HexToBrushConverter}}" Margin="0,0,8,0" />
+                                            <TextBlock Text="{Binding Title}" Style="{StaticResource SubheadingText}" VerticalAlignment="Center" />
+                                            <TextBlock Style="{StaticResource CaptionText}" Margin="6,0,0,0" VerticalAlignment="Center">
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="({0})">
+                                                        <Binding Path="Items.Count" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding Hint}" Style="{StaticResource CaptionText}" HorizontalAlignment="Right" />
+                                    </Grid>
+
+                                    <ItemsControl ItemsSource="{Binding Items}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0" Padding="20,10" Cursor="Hand">
+                                                    <Border.InputBindings>
+                                                        <MouseBinding MouseAction="LeftClick"
+                                                                      Command="{Binding DataContext.SelectQuote, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                                      CommandParameter="{Binding}" />
+                                                    </Border.InputBindings>
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="120" />
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="110" />
+                                                            <ColumnDefinition Width="110" />
+                                                            <ColumnDefinition Width="130" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Grid.Column="0" Text="{Binding Number}" Style="{StaticResource BodyText}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                                        <TextBlock Grid.Column="1" Text="{Binding CustomerName}" Style="{StaticResource BodyText}" VerticalAlignment="Center" />
+                                                        <TextBlock Grid.Column="2" Text="{Binding IssueDate, StringFormat='{}{0:dd/MM/yyyy}'}" Style="{StaticResource SecondaryText}" VerticalAlignment="Center" />
+                                                        <TextBlock Grid.Column="3" Text="{Binding TotalHt, StringFormat='{}{0:N2} €'}" Style="{StaticResource BodyText}" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                                                        <Border Grid.Column="4" Style="{StaticResource StatusBadgeStyle}" HorizontalAlignment="Right"
+                                                                Background="{Binding DisplayStatus, Converter={StaticResource StatusBrushConverter}}">
+                                                            <TextBlock Style="{StaticResource StatusBadgeTextStyle}" Text="{Binding DisplayStatus, Converter={StaticResource StatusLabelConverter}}"
+                                                                       Foreground="{Binding DisplayStatus, Converter={StaticResource StatusForegroundConverter}}" />
+                                                        </Border>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

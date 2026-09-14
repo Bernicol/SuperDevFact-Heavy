@@ -7,9 +7,27 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.5" />
+    <PackageReference Include="Material.Icons.WPF" Version="3.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.20" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.20" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.20" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.Local.json" Condition="Exists('appsettings.Local.json')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.Secrets.json" Condition="Exists('appsettings.Secrets.json')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <PropertyGroup>
@@ -18,6 +36,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <!-- Icône embarquée dans l'exécutable lui-même : contrairement à Window.Icon (lu au
+         runtime), c'est la seule façon fiable d'afficher notre icône dans la barre des
+         tâches, y compris lorsque l'app est lancée via `dotnet run`. -->
+    <ApplicationIcon>Assets\Logo.ico</ApplicationIcon>
   </PropertyGroup>
 
 </Project>

@@ -16,10 +16,12 @@ x64/
 x86/
 publish/
 artifacts/
+installer/output/
 
 ## Secrets / local config
 appsettings.Development.json
 appsettings.Local.json
+appsettings.Secrets.json
 *.local.json
 .env
 

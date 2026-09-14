@@ -2,7 +2,7 @@
 
 Application de devis/facturation pour un artisan (Solaris Installation, installateur de
 panneaux solaires) — client desktop natif WPF, construit sur un socle métier partagé
-avec la version web/hybride du même produit (voir le dépôt `SuperDevFact-Hybrid`).
+avec la version web/hybride du même produit : [SuperDevFact-Hybrid](https://github.com/Bernicol/SuperDevFact-Hybrid).
 
 > POC réalisé dans un contexte de démonstration technique, en environ 8 heures de
 > travail. Ce délai reflète la contrainte de l'exercice (aller vite vers un résultat
